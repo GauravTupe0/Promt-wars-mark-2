@@ -1,0 +1,112 @@
+import React, { useRef, memo } from 'react';
+
+/**
+ * Props for the Particle component.
+ */
+interface ParticleProps {
+  /** Size of the particle in pixels. */
+  size: number;
+  /** Horizontal position as a percentage (0-100). */
+  left: number;
+  /** Animation duration in seconds. */
+  duration: number;
+  /** Animation delay in seconds. */
+  delay: number;
+}
+
+/**
+ * Data structure for particle initialization.
+ */
+interface ParticleData extends ParticleProps {
+  /** Unique identifier for the particle. */
+  id: number;
+}
+
+/**
+ * Single animated particle in the hero background.
+ * Uses CSS animations for performance.
+ * 
+ * @component
+ */
+const Particle: React.FC<ParticleProps> = memo(({ size, left, duration, delay }) => {
+  return (
+    <div
+      className="particle"
+      style={{
+        width: `${size}px`,
+        height: `${size}px`,
+        left: `${left}%`,
+        animationDuration: `${duration}s`,
+        animationDelay: `${delay}s`,
+      }}
+    />
+  );
+});
+
+Particle.displayName = 'Particle';
+
+/**
+ * Full-bleed hero section with animated particles and CTA buttons.
+ * Serves as the primary landing visual for the application.
+ * 
+ * @component
+ */
+export const Hero: React.FC = memo(() => {
+  // Stable particles via ref — won't re-randomize on re-renders
+  const particlesRef = useRef<ParticleData[]>(
+    Array.from({ length: 14 }, (_, index) => ({
+      id: index,
+      size: Math.random() * 4 + 2,
+      left: Math.random() * 100,
+      duration: Math.random() * 18 + 12,
+      delay: Math.random() * -20,
+    }))
+  );
+
+  return (
+    <section id="hero" aria-labelledby="hero-heading" className="hero">
+      <div className="hero-bg" aria-hidden="true" />
+      <div className="hero-grid" aria-hidden="true" />
+      <div className="hero-particles" id="particles" aria-hidden="true">
+        {particlesRef.current.map((particle) => (
+          <Particle
+            key={particle.id}
+            size={particle.size}
+            left={particle.left}
+            duration={particle.duration}
+            delay={particle.delay}
+          />
+        ))}
+      </div>
+
+      <div className="hero-content">
+        <div className="badge" role="note" aria-label="Free civic education for Indian voters">
+          🇮🇳 India's Free Voter Education Guide
+        </div>
+        <h1 id="hero-heading">
+          Your Vote, Your <em>Adhikar</em>
+        </h1>
+        <p className="hero-sub">
+          A free, easy-to-understand guide to the Indian election process — from filing nominations
+          with the ECI, to pressing the EVM button on polling day. Learn the steps, know your
+          rights, and vote with full confidence.
+        </p>
+        <div className="hero-cta">
+          <a href="#timeline" className="btn-primary">
+            Explore the Process →
+          </a>
+          <a href="#quiz" className="btn-outline">
+            Test Your Knowledge
+          </a>
+        </div>
+      </div>
+
+      <div className="hero-scroll" aria-hidden="true">
+        <span>Scroll</span>
+        <div className="scroll-line" />
+      </div>
+    </section>
+  );
+});
+
+Hero.displayName = 'Hero';

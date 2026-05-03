@@ -1,0 +1,63 @@
+import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
+import { getFirestore, Firestore } from 'firebase/firestore';
+import { getAuth, Auth } from 'firebase/auth';
+import { getAnalytics, isSupported, Analytics } from 'firebase/analytics';
+
+/**
+ * Firebase configuration object.
+ * Values are populated from environment variables.
+ */
+interface FirebaseConfig {
+  apiKey: string | undefined;
+  authDomain: string | undefined;
+  projectId: string | undefined;
+  storageBucket: string | undefined;
+  messagingSenderId: string | undefined;
+  appId: string | undefined;
+  measurementId: string | undefined;
+}
+
+const firebaseConfig: FirebaseConfig = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+};
+
+/**
+ * Indicates if Firebase has been correctly configured with valid API keys.
+ * Used to conditionally enable/disable Firebase-dependent features.
+ */
+export const isFirebaseConfigured: boolean =
+  !!firebaseConfig.apiKey &&
+  !firebaseConfig.apiKey.includes('YOUR_');
+
+let app: FirebaseApp | null = null;
+let db: Firestore | null = null;
+let auth: Auth | null = null;
+let analytics: Analytics | null = null;
+
+if (isFirebaseConfigured) {
+  try {
+    // Avoid initializing multiple times (HMR)
+    app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+    db = getFirestore(app);
+    auth = getAuth(app);
+
+    // Analytics is optional and only works in browser with valid config
+    isSupported()
+      .then((yes: boolean) => {
+        if (yes && app) analytics = getAnalytics(app);
+      })
+      .catch(() => {
+        // Silent fail for analytics in development or blocked environments
+      });
+  } catch (error) {
+    console.error('Firebase initialization failed:', error);
+  }
+}
+
+export { app, db, auth, analytics };
