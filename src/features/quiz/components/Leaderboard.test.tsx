@@ -1,6 +1,8 @@
 import { render, screen, act } from '@testing-library/react';
 import React from 'react';
+
 import { Leaderboard } from './Leaderboard';
+
 import { leaderboardService } from '@/services/leaderboardService';
 
 // Mock Firebase config

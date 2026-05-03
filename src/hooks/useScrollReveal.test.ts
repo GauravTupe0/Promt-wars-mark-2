@@ -1,4 +1,5 @@
 import { renderHook } from '@testing-library/react';
+
 import { useScrollReveal } from './useScrollReveal';
 
 describe('useScrollReveal', () => {

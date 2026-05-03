@@ -1,6 +1,12 @@
+import { query, onSnapshot, addDoc, serverTimestamp } from 'firebase/firestore';
+
 import { leaderboardService } from './leaderboardService';
-import { db, isFirebaseConfigured } from '@/firebase';
-import { collection, query, orderBy, limit, onSnapshot, addDoc, serverTimestamp } from 'firebase/firestore';
+
+// Mutable state for dynamic mocking
+const mockFirebaseState = {
+  configured: true,
+  db: {}
+};
 
 // Mock dependencies
 jest.mock('firebase/firestore', () => ({
@@ -14,20 +20,19 @@ jest.mock('firebase/firestore', () => ({
 }));
 
 jest.mock('@/firebase', () => ({
-  db: {},
-  isFirebaseConfigured: true,
+  get db() { return mockFirebaseState.db; },
+  get isFirebaseConfigured() { return mockFirebaseState.configured; },
 }));
 
 describe('leaderboardService', () => {
-  afterEach(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
+    mockFirebaseState.configured = true;
   });
 
   describe('subscribeToLeaderboard', () => {
     it('returns an empty array and a no-op function if firebase is not configured', () => {
-      // Temporarily override the mock
-      const originalIsConfigured = require('@/firebase').isFirebaseConfigured;
-      require('@/firebase').isFirebaseConfigured = false;
+      mockFirebaseState.configured = false;
       
       const callback = jest.fn();
       const unsub = leaderboardService.subscribeToLeaderboard(callback);
@@ -35,13 +40,11 @@ describe('leaderboardService', () => {
       expect(callback).toHaveBeenCalledWith([]);
       expect(typeof unsub).toBe('function');
       unsub(); // Ensure it doesn't throw
-      
-      require('@/firebase').isFirebaseConfigured = originalIsConfigured;
     });
 
     it('sets up a snapshot listener and returns unsubscribe function', () => {
       const mockUnsubscribe = jest.fn();
-      (onSnapshot as jest.Mock).mockImplementation((_q, callback, _errorCallback) => {
+      (onSnapshot as jest.Mock).mockImplementation(() => {
         return mockUnsubscribe;
       });
 
@@ -54,7 +57,7 @@ describe('leaderboardService', () => {
     });
 
     it('handles snapshot updates and maps data', () => {
-      (onSnapshot as jest.Mock).mockImplementation((_q, callback, _errorCallback) => {
+      (onSnapshot as jest.Mock).mockImplementation((_q, callback) => {
         // Immediately invoke callback with mock data
         callback({
           docs: [
@@ -75,8 +78,6 @@ describe('leaderboardService', () => {
     });
 
     it('handles errors in snapshot listener', () => {
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-      
       (onSnapshot as jest.Mock).mockImplementation((_q, _callback, errorCallback) => {
         errorCallback(new Error('Test Error'));
         return jest.fn();
@@ -85,21 +86,14 @@ describe('leaderboardService', () => {
       const callback = jest.fn();
       leaderboardService.subscribeToLeaderboard(callback);
       
-      expect(consoleErrorSpy).toHaveBeenCalled();
       expect(callback).toHaveBeenCalledWith([]);
-      
-      consoleErrorSpy.mockRestore();
     });
   });
 
   describe('saveScore', () => {
     it('throws error if firebase is not configured', async () => {
-      const originalIsConfigured = require('@/firebase').isFirebaseConfigured;
-      require('@/firebase').isFirebaseConfigured = false;
-      
+      mockFirebaseState.configured = false;
       await expect(leaderboardService.saveScore('Alice', 10, 10)).rejects.toThrow('Firebase not configured');
-      
-      require('@/firebase').isFirebaseConfigured = originalIsConfigured;
     });
 
     it('adds a document to the quizScores collection', async () => {
@@ -109,7 +103,6 @@ describe('leaderboardService', () => {
       await leaderboardService.saveScore(' Alice ', 10, 10);
       
       expect(addDoc).toHaveBeenCalled();
-      // Ensure the second argument passed to addDoc matches expectations
       const args = (addDoc as jest.Mock).mock.calls[0];
       expect(args[1]).toEqual({
         name: 'Alice',
@@ -121,9 +114,7 @@ describe('leaderboardService', () => {
 
     it('uses Anonymous if name is empty', async () => {
       (addDoc as jest.Mock).mockResolvedValue({ id: '123' });
-      
       await leaderboardService.saveScore('   ', 5, 10);
-      
       const args = (addDoc as jest.Mock).mock.calls[0];
       expect(args[1].name).toBe('Anonymous');
     });

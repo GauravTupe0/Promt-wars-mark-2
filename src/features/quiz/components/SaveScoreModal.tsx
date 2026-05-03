@@ -92,7 +92,6 @@ export const SaveScoreModal = ({ score, total, onClose }: SaveScoreModalProps) =
           maxLength={24}
           onChange={handleNameChange}
           autoComplete="off"
-          autoFocus
         />
       </div>
 

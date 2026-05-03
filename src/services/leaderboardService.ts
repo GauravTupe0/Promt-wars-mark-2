@@ -42,8 +42,7 @@ export const leaderboardService = {
         ...doc.data()
       })) as LeaderboardEntry[];
       callback(scores);
-    }, (error) => {
-      console.error('Leaderboard subscription error:', error);
+    }, () => {
       callback([]);
     });
   },

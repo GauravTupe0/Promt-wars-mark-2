@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import React from 'react';
+
 import { HelpButton } from './HelpButton';
 
 // Mock useFocusTrap hook
@@ -9,12 +9,8 @@ jest.mock('@/hooks/useFocusTrap', () => ({
 }));
 
 describe('HelpButton Component', () => {
-  let locationSpy: jest.SpyInstance;
-
   beforeEach(() => {
-    // We cannot easily mock window.location.href directly in JSDOM
-    // But we can check if the menu closes as a proxy for the action being called
-    // Or we can try to mock the assignment
+    jest.clearAllMocks();
   });
 
   it('toggles the help menu when the SOS button is clicked', async () => {
@@ -37,12 +33,8 @@ describe('HelpButton Component', () => {
     // Open menu
     fireEvent.click(screen.getByLabelText(/Open emergency help menu/i));
     
-    // Mock the window.location.href assignment behavior if possible, 
-    // or just verify the side effect we can control (menu closing)
     const policeBtn = screen.getByRole('button', { name: /Call Police/i });
     
-    // Silence the actual location change if it errors in JSDOM
-    const originalHref = window.location.href;
     try {
       await user.click(policeBtn);
     } catch (e) {

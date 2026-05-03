@@ -1,6 +1,7 @@
 import { renderHook } from '@testing-library/react';
-import { useAnalytics } from './useAnalytics';
 import { logEvent } from 'firebase/analytics';
+
+import { useAnalytics } from './useAnalytics';
 
 // Define a mutable mock state that is hoisted correctly by Jest
 const mockFirebaseState = {

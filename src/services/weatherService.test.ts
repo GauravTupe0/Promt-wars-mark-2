@@ -1,5 +1,5 @@
-import { fetchWeather } from './weatherService';
 import { apiClient } from './apiClient';
+import { fetchWeather } from './weatherService';
 
 jest.mock('./apiClient', () => ({
   apiClient: {
@@ -114,14 +114,10 @@ describe('weatherService', () => {
     });
 
     it('re-throws error on API error', async () => {
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
       const apiError = new Error('API Error');
       (apiClient.get as jest.Mock).mockRejectedValueOnce(apiError);
 
       await expect(fetchWeather(lat, lon)).rejects.toThrow('API Error');
-      expect(consoleErrorSpy).toHaveBeenCalled();
-      
-      consoleErrorSpy.mockRestore();
     });
   });
 });

@@ -1,5 +1,5 @@
-import { reverseGeocode } from './geocodeService';
 import { apiClient } from './apiClient';
+import { reverseGeocode } from './geocodeService';
 
 jest.mock('./apiClient', () => ({
   apiClient: {

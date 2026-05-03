@@ -1,4 +1,5 @@
 import { renderHook, act } from '@testing-library/react';
+
 import { useGeolocation } from './useGeolocation';
 
 describe('useGeolocation', () => {

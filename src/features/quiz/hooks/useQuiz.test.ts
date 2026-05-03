@@ -1,4 +1,5 @@
 import { renderHook, act } from '@testing-library/react';
+
 import { useQuiz } from './useQuiz';
 
 describe('useQuiz hook', () => {

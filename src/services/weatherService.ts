@@ -64,23 +64,18 @@ export async function fetchWeather(latitude: number, longitude: number): Promise
     timezone: 'auto'
   });
 
+  const json: OpenMeteoResponse = await apiClient.get<OpenMeteoResponse>(url);
+  const weatherData: CurrentWeather = json.current_weather;
+
+  // Update cache
   try {
-    const json: OpenMeteoResponse = await apiClient.get<OpenMeteoResponse>(url);
-    const weatherData: CurrentWeather = json.current_weather;
-
-    // Update cache
-    try {
-      sessionStorage.setItem(cacheKey, JSON.stringify({
-        timestamp: Date.now(),
-        data: weatherData,
-      }));
-    } catch (e) {
-      // Ignore quota errors
-    }
-
-    return weatherData;
-  } catch (err) {
-    console.error('Weather fetch error:', err);
-    throw err;
+    sessionStorage.setItem(cacheKey, JSON.stringify({
+      timestamp: Date.now(),
+      data: weatherData,
+    }));
+  } catch (e) {
+    // Ignore quota errors
   }
+
+  return weatherData;
 }

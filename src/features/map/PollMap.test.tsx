@@ -1,13 +1,15 @@
+import { Loader } from '@googlemaps/js-api-loader';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor, act, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import { PollMap } from './PollMap';
+
 import * as geolocationHook from '@/hooks/useGeolocation';
-import { fetchWeather } from '@/services/weatherService';
 import { reverseGeocode } from '@/services/geocodeService';
 import { fetchRealPollingStations, buildPollingStations } from '@/services/pollingStationsService';
+import { fetchWeather } from '@/services/weatherService';
 
 // Mock dependencies
 jest.mock('@googlemaps/js-api-loader', () => {
@@ -157,8 +159,7 @@ describe('PollMap Component', () => {
   });
 
   it('shows error message when map fails to load', async () => {
-    const loaderModule = require('@googlemaps/js-api-loader');
-    loaderModule.Loader.mockImplementationOnce(() => ({
+    (Loader as unknown as jest.Mock).mockImplementationOnce(() => ({
       load: jest.fn().mockRejectedValue(new Error('API Key Invalid')),
     }));
 
@@ -196,7 +197,7 @@ describe('PollMap Component', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText(/Fallback Station/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/Fallback Station/i).length).toBeGreaterThan(0);
     });
   });
 });

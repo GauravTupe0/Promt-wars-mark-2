@@ -1,10 +1,15 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+
 import { QuizScore } from './QuizScore';
-import { isFirebaseConfigured } from '@/firebase';
+
+// Mutable state for dynamic mocking
+const mockFirebaseState = {
+  configured: true
+};
 
 // Mock dependencies
 jest.mock('@/firebase', () => ({
-  isFirebaseConfigured: true,
+  get isFirebaseConfigured() { return mockFirebaseState.configured; },
 }));
 
 jest.mock('./Leaderboard', () => ({
@@ -24,6 +29,7 @@ describe('QuizScore', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockFirebaseState.configured = true;
   });
 
   it('renders perfect score message', () => {
@@ -65,15 +71,8 @@ describe('QuizScore', () => {
   });
 
   it('does not show save modal if firebase is not configured', () => {
-    // Override mock for this test
-    const firebaseModule = require('@/firebase');
-    const originalValue = firebaseModule.isFirebaseConfigured;
-    Object.defineProperty(firebaseModule, 'isFirebaseConfigured', { value: false, writable: true });
-    
+    mockFirebaseState.configured = false;
     render(<QuizScore score={8} total={10} onRetry={mockOnRetry} />);
     expect(screen.queryByTestId('mock-save-modal')).not.toBeInTheDocument();
-    
-    // Reset
-    Object.defineProperty(firebaseModule, 'isFirebaseConfigured', { value: originalValue });
   });
 });

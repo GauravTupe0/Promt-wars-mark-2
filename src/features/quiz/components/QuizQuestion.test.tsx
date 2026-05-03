@@ -1,5 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+
 import { QuizQuestion } from './QuizQuestion';
+
 import { questions } from '@/data/questions';
 
 describe('QuizQuestion Component', () => {

@@ -56,13 +56,8 @@ export const apiClient = {
    * @returns {Promise<T>} - The validated and parsed data.
    */
   validatedGet: async <T>(url: string, schema: { parse: (data: any) => T }, options: RequestInit = {}): Promise<T> => {
-    try {
-      const data = await apiClient.get<any>(url, options);
-      return schema.parse(data);
-    } catch (error) {
-      // Re-throw to allow component-level handling
-      throw error;
-    }
+    const data = await apiClient.get<any>(url, options);
+    return schema.parse(data);
   },
 
   /**

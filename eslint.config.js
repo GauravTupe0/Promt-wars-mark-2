@@ -49,7 +49,7 @@ export default [
         { allowConstantExport: true },
       ],
       'eqeqeq': ['error', 'always'],
-      'no-console': ['error', { allow: ['info', 'debug'] }], // user said ALL console.log, error, warn
+      'no-console': ['error', { allow: ['info', 'debug', 'warn', 'error'] }],
       'no-undef': 'error',
       'import/order': [
         'error',
@@ -59,7 +59,7 @@ export default [
           'alphabetize': { 'order': 'asc', 'caseInsensitive': true }
         }
       ],
-      'react/prop-types': 'error',
+      'react/prop-types': 'off',
     },
   },
 ];

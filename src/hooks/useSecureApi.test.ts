@@ -1,6 +1,7 @@
 import { renderHook, act } from '@testing-library/react';
-import { useSecureApi } from './useSecureApi';
 import DOMPurify from 'dompurify';
+
+import { useSecureApi } from './useSecureApi';
 
 jest.mock('dompurify', () => ({
   sanitize: jest.fn((str) => str), // By default just pass through

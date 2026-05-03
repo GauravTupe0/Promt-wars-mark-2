@@ -1,4 +1,5 @@
 import { renderHook, act } from '@testing-library/react';
+
 import { useActiveSection } from './useActiveSection';
 
 // We need to mock the constant SECTION_IDS

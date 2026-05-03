@@ -157,7 +157,7 @@ export const PollMap: React.FC = memo(() => {
     };
 
     initMap();
-  }, [isMapVisible, userPosition]);
+  }, [isMapVisible, userPosition, map]);
 
   useEffect(() => {
     if (!map || !userPosition) return;
@@ -248,7 +248,7 @@ export const PollMap: React.FC = memo(() => {
         }
       }
     );
-  }, [selectedStation, userPosition]);
+  }, [selectedStation, userPosition, map]);
 
   /**
    * Handles selection of a polling station from the list.

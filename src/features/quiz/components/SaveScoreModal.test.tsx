@@ -1,9 +1,9 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+
 import { SaveScoreModal } from './SaveScoreModal';
+
 import { leaderboardService } from '@/services/leaderboardService';
-import { isFirebaseConfigured } from '@/firebase';
-import { useAnalytics } from '@/hooks/useAnalytics';
 
 // Mock dependencies
 jest.mock('@/services/leaderboardService', () => ({
@@ -72,7 +72,6 @@ describe('SaveScoreModal', () => {
   it('handles save error gracefully by still showing success (non-blocking)', async () => {
     const user = userEvent.setup();
     (leaderboardService.saveScore as jest.Mock).mockRejectedValueOnce(new Error('Firebase Error'));
-    console.error = jest.fn(); // Suppress error log
     
     render(<SaveScoreModal {...defaultProps} />);
     

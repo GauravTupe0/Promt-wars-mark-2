@@ -1,8 +1,9 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { Navbar } from './Navbar';
 import { useActiveSection } from '../hooks/useActiveSection';
+
+import { Navbar } from './Navbar';
 
 // Mock dependencies
 jest.mock('../hooks/useActiveSection', () => ({
