@@ -1,8 +1,11 @@
 import { useState, useRef, useCallback } from 'react';
-import { questions } from '@/data/questions';
-import { QUIZ_LETTERS } from '@/constants';
-import { QuizOption } from './QuizOption';
+
 import { QuizQuestionProps } from '../types';
+
+import { QuizOption } from './QuizOption';
+
+import { QUIZ_LETTERS } from '@/constants';
+import { questions } from '@/data/questions';
 import { useAnalytics } from '@/hooks/useAnalytics';
 
 /** Renders a single quiz question with answer options and feedback. */

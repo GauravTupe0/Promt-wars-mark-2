@@ -1,5 +1,6 @@
-import { GEOCODE_API_BASE } from '@/constants';
 import { apiClient } from './apiClient';
+
+import { GEOCODE_API_BASE } from '@/constants';
 
 const CACHE_KEY: string = 'elected_geocode_cache';
 const CACHE_TTL: number = 24 * 60 * 60 * 1000; // 24 hours

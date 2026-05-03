@@ -1,5 +1,6 @@
-import { formatDistance } from '@/utils/geo';
 import { TripCardProps } from '../types';
+
+import { formatDistance } from '@/utils/geo';
 
 /** Shows travel times and distance for the selected station. */
 export const TripCard = ({ station }: TripCardProps) => {

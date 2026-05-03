@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+
 import { Glossary } from './Glossary';
 
 describe('Glossary Component Integration', () => {

@@ -1,4 +1,5 @@
 import { memo } from 'react';
+
 import { APP_NAME } from '@/constants';
 
 /**
@@ -15,13 +16,13 @@ const Footer = memo(() => {
           <div className="footer-logo-img"></div>
           {APP_NAME}
         </div>
-        <p>
-          Your free guide to understanding Indian elections — from registering on the Electoral
-          Roll to voting on an EVM. Powered by ECI data. Non-partisan.
-        </p>
+         <p>
+           Your free guide to understanding Indian elections — from registering on the Electoral
+           Roll to voting on an EVM. Powered by ECI data. Non-partisan educational resource.
+         </p>
         <div className="footer-newsletter">
           <input type="email" placeholder="Enter your email" aria-label="Email for election updates" />
-          <button type="button">Get Updates</button>
+           <button type="button" aria-label="Subscribe to election updates">Get Updates</button>
         </div>
       </div>
 

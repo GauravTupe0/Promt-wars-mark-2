@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo, ChangeEvent, memo } from 'react';
 
-import { glossaryTerms } from '@/data/content';
 import { SEARCH_DEBOUNCE_MS } from '@/constants';
+import { glossaryTerms } from '@/data/content';
 import { useDebounce } from '@/hooks/useDebounce';
 import { sanitizeText } from '@/utils/sanitize';
 

@@ -1,6 +1,8 @@
 import { memo } from 'react';
-import { formatDistance } from '@/utils/geo';
+
 import { StationItemProps } from '../types';
+
+import { formatDistance } from '@/utils/geo';
 
 /** Single polling station row in the station list. */
 const StationItemComponent = ({ station, isSelected, onSelect }: StationItemProps) => {

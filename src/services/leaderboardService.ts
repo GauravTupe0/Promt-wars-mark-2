@@ -9,9 +9,10 @@ import {
   QuerySnapshot,
   DocumentData
 } from 'firebase/firestore';
-import { db, isFirebaseConfigured } from '@/firebase';
+
 import { QUIZ_LEADERBOARD_LIMIT } from '@/constants';
 import { LeaderboardEntry } from '@/features/quiz/types';
+import { db, isFirebaseConfigured } from '@/firebase';
 
 /**
  * Service to manage leaderboard operations.

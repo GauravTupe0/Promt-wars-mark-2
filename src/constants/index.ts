@@ -55,12 +55,6 @@ export const MAPS_API_KEY: string = import.meta.env.VITE_GOOGLE_MAPS_API_KEY ?? 
 export const MAPS_CONFIGURED: boolean =
   Boolean(MAPS_API_KEY) && !MAPS_API_KEY.includes('YOUR_');
 
-interface PollOffset {
-  name: string;
-  delta: [number, number];
-  type: string;
-  id: string;
-}
 
 export const POLL_OFFSETS = [
   { name: 'Gram Panchayat Office',    delta: [0.006,  0.008],  type: 'Government Building', id: 'p1' },

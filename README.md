@@ -9,6 +9,7 @@ ElectED is a non-partisan, accessible web application designed to educate citize
 - **Educational Quiz**: Test your knowledge of the election process and track your progress.
 - **Multi-language Support**: Accessible in multiple languages to support diverse communities.
 - **Accessibility First**: WCAG AA/AAA compliant design with full keyboard navigation and screen reader support.
+- **Responsive Footer**: Accessible newsletter signup and adaptive layout for all screen sizes.
 - **AI Assistant**: Quick answers to common voting questions (Simulation).
 
 ## 🏗️ Architecture

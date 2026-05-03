@@ -1,6 +1,7 @@
 import { renderHook } from '@testing-library/react';
-import { useFocusTrap } from './useFocusTrap';
 import { RefObject } from 'react';
+
+import { useFocusTrap } from './useFocusTrap';
 
 describe('useFocusTrap hook', () => {
   let container: HTMLDivElement;

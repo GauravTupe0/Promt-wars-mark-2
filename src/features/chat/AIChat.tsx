@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect, useCallback, memo, ChangeEvent, KeyboardEvent } from 'react';
 import DOMPurify from 'dompurify';
+import React, { useState, useRef, useEffect, useCallback, memo, ChangeEvent, KeyboardEvent } from 'react';
 
 /**
  * Message data structure for the AI Chat.

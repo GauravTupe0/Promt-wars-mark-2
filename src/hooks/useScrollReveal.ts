@@ -1,4 +1,5 @@
 import { useEffect, useRef, useCallback } from 'react';
+
 import { INTERSECTION_THRESHOLD } from '@/constants';
 
 /**

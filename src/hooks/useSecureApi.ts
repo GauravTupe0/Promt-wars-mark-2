@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react';
 import DOMPurify from 'dompurify';
+import { useState, useCallback } from 'react';
 
 interface FetchOptions extends RequestInit {
   requireAuth?: boolean;

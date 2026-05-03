@@ -1,15 +1,16 @@
 import React, { Suspense, lazy, memo } from 'react';
 
-import { ARIA_LABELS, APP_NAME, SKIP_LINK_TARGET } from '@/constants';
 import ErrorBoundary from './components/ErrorBoundary';
-import { LoadingSpinner } from './components/LoadingSpinner';
 import { Footer } from './components/Footer';
 import { GoogleTranslateInit } from './components/GoogleTranslate';
 import { HelpButton } from './components/HelpButton';
+import { LoadingSpinner } from './components/LoadingSpinner';
 import { Navbar } from './components/Navbar';
 import { useActiveSection } from './hooks/useActiveSection';
 import { useAnalytics } from './hooks/useAnalytics';
 import { useScrollReveal } from './hooks/useScrollReveal';
+
+import { ARIA_LABELS, APP_NAME, SKIP_LINK_TARGET } from '@/constants';
 
 // Route-level code splitting with React.lazy
 const Hero      = lazy(() => import('./features/hero/Hero').then((m) => ({ default: m.Hero })));
@@ -100,9 +101,7 @@ const App: React.FC = memo(() => {
         </ErrorBoundary>
       </main>
 
-      <footer role="contentinfo">
-        <Footer />
-      </footer>
+      <Footer />
       <HelpButton />
     </>
   );

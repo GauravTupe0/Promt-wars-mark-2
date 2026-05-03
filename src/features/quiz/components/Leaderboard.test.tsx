@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+
 import { Leaderboard } from './Leaderboard';
 
 describe('Leaderboard Component', () => {

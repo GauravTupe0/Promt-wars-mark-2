@@ -1,9 +1,11 @@
 import React, { memo } from 'react';
-import { questions } from '@/data/questions';
-import { isFirebaseConfigured } from '@/firebase';
-import { useQuiz } from './hooks/useQuiz';
+
 import { QuizQuestion } from './components/QuizQuestion';
 import { QuizScore } from './components/QuizScore';
+import { useQuiz } from './hooks/useQuiz';
+
+import { questions } from '@/data/questions';
+import { isFirebaseConfigured } from '@/firebase';
 
 /** 
  * Interactive election knowledge quiz with progress indicators.

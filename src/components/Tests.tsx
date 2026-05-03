@@ -1,4 +1,5 @@
 import { useEffect, useRef, memo } from 'react';
+
 import { tests, categoryScores } from '../data/content';
 
 interface CatCardProps {

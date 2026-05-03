@@ -1,9 +1,13 @@
 import { useState } from 'react';
-import { isFirebaseConfigured } from '@/firebase';
-import { QUIZ_MESSAGES, QUIZ_TITLES } from '@/constants';
-import { SaveScoreModal } from './SaveScoreModal';
-import { Leaderboard } from './Leaderboard';
+
 import { QuizScoreProps } from '../types';
+
+import { Leaderboard } from './Leaderboard';
+import { SaveScoreModal } from './SaveScoreModal';
+
+import { QUIZ_MESSAGES, QUIZ_TITLES } from '@/constants';
+import { isFirebaseConfigured } from '@/firebase';
+
 
 /** Score screen shown after all questions have been answered. */
 export const QuizScore = ({ score, total, onRetry }: QuizScoreProps) => {

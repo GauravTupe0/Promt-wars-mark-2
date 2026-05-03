@@ -1,18 +1,23 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo, memo } from 'react';
 import { Loader, Library } from '@googlemaps/js-api-loader';
-import { useGeolocation } from '@/hooks/useGeolocation';
-import { useAnalytics } from '@/hooks/useAnalytics';
-import { fetchWeather } from '@/services/weatherService';
-import { reverseGeocode } from '@/services/geocodeService';
-import { fetchRealPollingStations, buildPollingStations } from '@/services/pollingStationsService';
-import { MAPS_API_KEY, MAPS_CONFIGURED, MAP_STYLES } from '@/constants';
-import { formatDistance } from '@/utils/geo';
-import { WeatherCard } from './components/WeatherCard';
+import React, { useState, useEffect, useRef, useCallback, useMemo, memo } from 'react';
+
+import { MapPlaceholder } from './components/MapPlaceholder';
 import { StationList } from './components/StationList';
 import { TripCard } from './components/TripCard';
-import { MapPlaceholder } from './components/MapPlaceholder';
-import ErrorBoundary from '@/components/ErrorBoundary';
+import { WeatherCard } from './components/WeatherCard';
 import { WeatherData, Station } from './types';
+
+import ErrorBoundary from '@/components/ErrorBoundary';
+import { MAPS_API_KEY, MAPS_CONFIGURED, MAP_STYLES } from '@/constants';
+import { useAnalytics } from '@/hooks/useAnalytics';
+import { useGeolocation } from '@/hooks/useGeolocation';
+import { reverseGeocode } from '@/services/geocodeService';
+import { fetchRealPollingStations, buildPollingStations } from '@/services/pollingStationsService';
+import { fetchWeather } from '@/services/weatherService';
+import { formatDistance } from '@/utils/geo';
+
+
+
 
 /**
  * Interactive section: locates user, shows weather, and renders nearby polling stations.
@@ -26,7 +31,6 @@ export const PollMap: React.FC = memo(() => {
 
   const sectionRef = useRef<HTMLElement>(null);
   const mapRef = useRef<HTMLDivElement | null>(null);
-  const googleMapRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.Marker[]>([]);
   const directionsRendererRef = useRef<google.maps.DirectionsRenderer | null>(null);
 
@@ -36,6 +40,8 @@ export const PollMap: React.FC = memo(() => {
   const [selectedStation, setSelectedStation] = useState<Station | null>(null);
   const [isMapVisible, setIsMapVisible] = useState<boolean>(false);
   const [stationsLoading, setStationsLoading] = useState<boolean>(false);
+  const [mapError, setMapError] = useState<string | null>(null);
+  const [map, setMap] = useState<google.maps.Map | null>(null);
 
   /**
    * Intersection Observer to defer Map loading until it's near the viewport.
@@ -118,15 +124,14 @@ export const PollMap: React.FC = memo(() => {
     const loader = new Loader({
       apiKey: MAPS_API_KEY,
       version: 'weekly',
-      libraries: ['places', 'directions'] as Library[],
+      libraries: ['places', 'routes'] as Library[],
     });
 
-    /** Loads Google Maps API and initializes map instance. */
     const initMap = async (): Promise<void> => {
       try {
         const google = await loader.load();
-        if (!googleMapRef.current && mapRef.current) {
-          googleMapRef.current = new google.maps.Map(mapRef.current, {
+        if (!map && mapRef.current) {
+          const newMap = new google.maps.Map(mapRef.current, {
             center: userPosition,
             zoom: 13,
             mapTypeId: 'roadmap',
@@ -136,14 +141,17 @@ export const PollMap: React.FC = memo(() => {
             fullscreenControl: true,
             gestureHandling: 'cooperative',
           });
+          setMap(newMap);
 
           directionsRendererRef.current = new google.maps.DirectionsRenderer({
             suppressMarkers: true,
             polylineOptions: { strokeColor: '#9a7322', strokeWeight: 4, strokeOpacity: 0.8 },
           });
-          directionsRendererRef.current.setMap(googleMapRef.current);
+          directionsRendererRef.current.setMap(newMap);
         }
-      } catch (_err) {
+      } catch (_err: any) {
+        console.error('Map failed to load', _err);
+        setMapError(_err.message || String(_err));
         // Handled by ErrorBoundary
       }
     };
@@ -151,11 +159,8 @@ export const PollMap: React.FC = memo(() => {
     initMap();
   }, [isMapVisible, userPosition]);
 
-  /**
-   * Updates Map Markers whenever stations or user position change.
-   */
   useEffect(() => {
-    if (!googleMapRef.current || !userPosition) return;
+    if (!map || !userPosition) return;
 
     markersRef.current.forEach((m) => m.setMap(null));
     markersRef.current = [];
@@ -165,7 +170,7 @@ export const PollMap: React.FC = memo(() => {
 
     const userMarker = new google.maps.Marker({
       position: userPosition,
-      map: googleMapRef.current,
+      map: map,
       title: 'Your Location',
       icon: {
         path: google.maps.SymbolPath.CIRCLE,
@@ -182,7 +187,7 @@ export const PollMap: React.FC = memo(() => {
     stations.forEach((station, index) => {
       const marker = new google.maps.Marker({
         position: { lat: station.lat, lng: station.lng },
-        map: googleMapRef.current,
+        map: map,
         title: station.name,
         icon: {
           path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
@@ -208,8 +213,8 @@ export const PollMap: React.FC = memo(() => {
       });
 
       marker.addListener('click', () => {
-        if (googleMapRef.current) {
-          infoWindow.open(googleMapRef.current, marker);
+        if (map) {
+          infoWindow.open(map, marker);
           setSelectedStation(station);
           trackEvent('map_marker_click', { station_name: station.name });
         }
@@ -218,14 +223,14 @@ export const PollMap: React.FC = memo(() => {
       markersRef.current.push(marker);
     });
 
-    googleMapRef.current.panTo(userPosition);
-  }, [userPosition, stations, trackEvent]);
+    map.panTo(userPosition);
+  }, [map, userPosition, stations, trackEvent]);
 
   /**
    * Updates directions whenever the selected station changes.
    */
   useEffect(() => {
-    if (!selectedStation || !googleMapRef.current || !MAPS_CONFIGURED || !userPosition) return;
+    if (!selectedStation || !map || !MAPS_CONFIGURED || !userPosition) return;
 
     const google = window.google;
     if (!google) return;
@@ -250,11 +255,11 @@ export const PollMap: React.FC = memo(() => {
    */
   const handleSelectStation = useCallback((station: Station): void => {
     setSelectedStation(station);
-    if (googleMapRef.current) {
-      googleMapRef.current.panTo({ lat: station.lat, lng: station.lng });
-      googleMapRef.current.setZoom(14);
+    if (map) {
+      map.panTo({ lat: station.lat, lng: station.lng });
+      map.setZoom(14);
     }
-  }, []);
+  }, [map]);
 
   /** Handles the "Locate" button click. */
   const handleLocateClick = useCallback((): void => {
@@ -338,13 +343,23 @@ export const PollMap: React.FC = memo(() => {
                 componentName="GoogleMap"
               >
                 {MAPS_CONFIGURED ? (
-                  <div
-                    ref={mapRef}
-                    className="pollmap-map"
-                    aria-label="Google Map showing nearby polling stations"
-                    role="application"
-                    style={{ width: '100%', height: '480px' }}
-                  />
+                  mapError ? (
+                    <div className="pollmap-map-placeholder">
+                      <div style={{ fontSize: '3rem', marginBottom: '1rem' }} aria-hidden="true">⚠️</div>
+                      <strong>Map Error</strong>
+                      <p style={{ marginTop: '0.5rem', color: 'var(--red)', fontSize: '0.9rem' }}>
+                        {mapError}
+                      </p>
+                    </div>
+                  ) : (
+                    <div
+                      ref={mapRef}
+                      className="pollmap-map"
+                      aria-label="Google Map showing nearby polling stations"
+                      role="application"
+                      style={{ width: '100%', height: '480px' }}
+                    />
+                  )
                 ) : (
                   <MapPlaceholder userPosition={userPosition} />
                 )}

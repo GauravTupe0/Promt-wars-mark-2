@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+
+import { LeaderboardEntry } from '../types';
+
 import { isFirebaseConfigured } from '@/firebase';
 import { leaderboardService } from '@/services/leaderboardService';
-import { LeaderboardEntry } from '../types';
 
 const RANK_LABELS = ['🥇', '🥈', '🥉', '4th', '5th'];
 

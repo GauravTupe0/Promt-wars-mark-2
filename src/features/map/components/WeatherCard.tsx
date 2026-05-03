@@ -1,6 +1,8 @@
 import { memo } from 'react';
-import { WEATHER_CODE_MAP } from '@/constants';
+
 import { WeatherCardProps } from '../types';
+
+import { WEATHER_CODE_MAP } from '@/constants';
 
 const getWeatherInfo = (weatherCode: number) => {
   // Use type assertion to allow indexing by number

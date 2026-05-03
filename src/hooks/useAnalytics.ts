@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
 import { logEvent } from 'firebase/analytics';
+import { useEffect } from 'react';
+
 import { analytics, isFirebaseConfigured } from '@/firebase';
 
 /**

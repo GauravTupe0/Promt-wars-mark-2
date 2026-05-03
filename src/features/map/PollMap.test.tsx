@@ -1,9 +1,11 @@
-import React from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor } from '@testing-library/react';
+import React from 'react';
 
 import { PollMap } from './PollMap';
+
 import * as geolocationHook from '@/hooks/useGeolocation';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
 
 // Mock the hooks
 jest.mock('@/hooks/useGeolocation');

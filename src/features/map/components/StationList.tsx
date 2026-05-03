@@ -1,6 +1,8 @@
 import { memo } from 'react';
-import { StationItem } from './StationItem';
+
 import { StationListProps } from '../types';
+
+import { StationItem } from './StationItem';
 
 /** List of nearby polling stations. */
 const StationListComponent = ({ stations, selectedId, onSelect }: StationListProps) => {

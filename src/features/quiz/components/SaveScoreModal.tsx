@@ -1,8 +1,10 @@
 import { useState, useCallback, ChangeEvent } from 'react';
-import { isFirebaseConfigured } from '@/firebase';
-import { leaderboardService } from '@/services/leaderboardService';
+
 import { SaveScoreModalProps } from '../types';
+
+import { isFirebaseConfigured } from '@/firebase';
 import { useAnalytics } from '@/hooks/useAnalytics';
+import { leaderboardService } from '@/services/leaderboardService';
 
 /** Modal for saving a quiz score to the Firebase leaderboard. */
 export const SaveScoreModal = ({ score, total, onClose }: SaveScoreModalProps) => {

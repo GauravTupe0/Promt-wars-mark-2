@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+
 import { StatsSection } from './Stats';
 
 // Mock intersection observer since it's used in reveal classes (handled globally in setupTests.ts)

@@ -1,5 +1,6 @@
-import { WEATHER_API_BASE } from '@/constants';
 import { apiClient } from './apiClient';
+
+import { WEATHER_API_BASE } from '@/constants';
 
 /**
  * Interface representing the current weather structure returned by the API.

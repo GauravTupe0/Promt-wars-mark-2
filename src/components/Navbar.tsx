@@ -1,9 +1,11 @@
 import React, { useState, useCallback, memo, KeyboardEvent, MouseEvent } from 'react';
 
-import { LANGUAGES, NAV_LINKS, APP_NAME, ARIA_LABELS, STORAGE_KEYS } from '@/constants';
 import { useActiveSection } from '../hooks/useActiveSection';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+
 import { GoogleTranslateInit } from './GoogleTranslate';
+
+import { LANGUAGES, NAV_LINKS, APP_NAME, ARIA_LABELS, STORAGE_KEYS } from '@/constants';
 
 interface Language {
   code: string;

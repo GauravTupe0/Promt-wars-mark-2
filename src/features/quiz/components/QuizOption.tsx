@@ -1,4 +1,5 @@
 import { memo } from 'react';
+
 import { QuizOptionProps } from '../types';
 
 /** Single answer option button in the quiz. */
