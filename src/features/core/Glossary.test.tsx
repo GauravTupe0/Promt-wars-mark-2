@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { Glossary } from './Glossary';
@@ -11,11 +11,17 @@ describe('Glossary Component Integration', () => {
     const searchInput = screen.getByPlaceholderText(/Search terms/i);
     expect(searchInput).toBeInTheDocument();
 
-    // Type a specific term
-    await user.type(searchInput, 'Ballot');
+    expect(screen.getByText('EVM')).toBeInTheDocument();
+    expect(screen.getByText('Lok Sabha')).toBeInTheDocument();
 
-    // Wait for debounce and verify only "Ballot" is displayed
-    const term = await screen.findByText('Ballot');
-    expect(term).toBeInTheDocument();
+    // Type a specific term
+    await user.type(searchInput, 'EVM');
+
+    // Wait for debounce and verify filtered results
+    await waitFor(() => {
+      expect(screen.queryByText('Lok Sabha')).not.toBeInTheDocument();
+    });
+    
+    expect(screen.getByText('EVM')).toBeInTheDocument();
   });
 });

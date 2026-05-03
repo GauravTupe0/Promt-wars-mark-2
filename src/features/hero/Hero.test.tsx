@@ -9,10 +9,10 @@ describe('Hero Component', () => {
     // Check heading
     const heading = screen.getByRole('heading', { level: 1 });
     expect(heading).toBeInTheDocument();
-    expect(heading).toHaveTextContent(/Understand the Power of Your Vote/i);
+    expect(heading).toHaveTextContent(/Your Vote, Your Adhikar/i);
 
     // Check description
-    const desc = screen.getByText(/A comprehensive, accessible guide to how elections work/i);
+    const desc = screen.getByText(/A free, easy-to-understand guide to the Indian election process/i);
     expect(desc).toBeInTheDocument();
   });
 
@@ -23,7 +23,7 @@ describe('Hero Component', () => {
     expect(startLearningBtn).toBeInTheDocument();
     expect(startLearningBtn).toHaveAttribute('href', '#timeline');
 
-    const testKnowledgeBtn = screen.getByRole('link', { name: /Take the Quiz/i });
+    const testKnowledgeBtn = screen.getByRole('link', { name: /Test Your Knowledge/i });
     expect(testKnowledgeBtn).toBeInTheDocument();
     expect(testKnowledgeBtn).toHaveAttribute('href', '#quiz');
   });

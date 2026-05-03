@@ -36,8 +36,8 @@ export const apiClient = {
 
       return await response.json() as T;
     } catch (error) {
-      if (error instanceof Error && error.message.includes('API Error')) {
-        throw error; // Already handled
+      if (error instanceof Error && (error.message.includes('API Error') || error.message !== 'Failed to fetch')) {
+        throw error; // Already handled or specific error
       }
       const msg = 'Network connection failed. Please check your internet.';
       toast.error(msg, { id: 'network-error' });

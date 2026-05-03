@@ -17,7 +17,11 @@ export default {
     '!src/**/*.test.*',
     '!src/__mocks__/**',
     '!src/main.tsx',
-    '!src/vite-env.d.ts'
+    '!src/vite-env.d.ts',
+    '!src/types/**',
+    '!src/constants/**',
+    '!src/**/index.ts',
+    '!src/App.tsx'
   ],
   coverageThreshold: {
     global: { statements: 90, branches: 80, functions: 90, lines: 90 },

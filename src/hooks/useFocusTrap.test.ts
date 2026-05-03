@@ -36,10 +36,19 @@ describe('useFocusTrap hook', () => {
     const event = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true });
     container.dispatchEvent(event);
     
-    // Since we're in a JSDOM environment without a real browser tab cycle,
-    // we have to check if focus was programmatically moved or prevented.
-    // In our implementation, Tab on last element calls firstElement.focus()
+    // Tab on last element calls firstElement.focus()
     expect(document.activeElement).toBe(btn1);
+  });
+
+  it('wraps focus backwards on Shift+Tab from first element', () => {
+    const ref: RefObject<HTMLDivElement> = { current: container };
+    renderHook(() => useFocusTrap(ref, true));
+    
+    btn1.focus();
+    const event = new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true });
+    container.dispatchEvent(event);
+    
+    expect(document.activeElement).toBe(btn2);
   });
 
   it('restores focus on cleanup', () => {
@@ -56,5 +65,28 @@ describe('useFocusTrap hook', () => {
     
     expect(document.activeElement).toBe(triggerBtn);
     document.body.removeChild(triggerBtn);
+  });
+
+  it('does nothing when inactive', () => {
+    const ref: RefObject<HTMLDivElement> = { current: container };
+    const triggerBtn = document.createElement('button');
+    document.body.appendChild(triggerBtn);
+    triggerBtn.focus();
+    
+    renderHook(() => useFocusTrap(ref, false));
+    
+    expect(document.activeElement).toBe(triggerBtn);
+    document.body.removeChild(triggerBtn);
+  });
+
+  it('ignores non-Tab keys', () => {
+    const ref: RefObject<HTMLDivElement> = { current: container };
+    renderHook(() => useFocusTrap(ref, true));
+    
+    btn2.focus();
+    const event = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true });
+    container.dispatchEvent(event);
+    
+    expect(document.activeElement).toBe(btn2);
   });
 });

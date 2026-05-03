@@ -26,7 +26,7 @@ Strict Persona Guidelines:
 `;
 
 export const callGeminiWithJSON = async (userPrompt: string): Promise<GeminiResponse> => {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  const apiKey = (typeof process !== 'undefined' && process.env.VITE_GEMINI_API_KEY) ? process.env.VITE_GEMINI_API_KEY : (import.meta as any).env?.VITE_GEMINI_API_KEY;
   
   const payload = {
     contents: [

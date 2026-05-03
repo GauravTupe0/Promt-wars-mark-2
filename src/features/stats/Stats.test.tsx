@@ -16,9 +16,9 @@ describe('Stats Component', () => {
     const items = screen.getAllByRole('listitem');
     expect(items.length).toBe(4);
 
-    expect(screen.getByText('Election Phases')).toBeInTheDocument();
-    expect(screen.getByText('Key Terms Defined')).toBeInTheDocument();
-    expect(screen.getByText('Quiz Questions')).toBeInTheDocument();
+    expect(screen.getByText('Registered Voters')).toBeInTheDocument();
+    expect(screen.getByText('Lok Sabha Seats')).toBeInTheDocument();
+    expect(screen.getByText('Election Phases (2024)')).toBeInTheDocument();
     expect(screen.getByText('Free to Access')).toBeInTheDocument();
   });
 });

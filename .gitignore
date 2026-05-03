@@ -1,6 +1,7 @@
 # Debug & report files
 ts-errors*.txt
 eslint-report*.json
+coverage/
 
 # Logs
 logs

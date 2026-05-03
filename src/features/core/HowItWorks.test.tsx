@@ -5,7 +5,7 @@ import { HowItWorks } from './HowItWorks';
 describe('HowItWorks Component', () => {
   it('renders section heading', () => {
     render(<HowItWorks />);
-    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent(/Steps Every Voter Should Know/i);
+    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent(/Steps Every Indian Voter Should Know/i);
   });
 
   it('renders all step cards', () => {

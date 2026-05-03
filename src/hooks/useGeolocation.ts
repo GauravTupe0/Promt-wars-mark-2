@@ -18,7 +18,7 @@ export function useGeolocation(): GeolocationResult {
   const [phase, setPhase] = useState<GeolocationPhase>('idle');
 
   const locate = () => {
-    if (!('geolocation' in navigator)) {
+    if (!navigator || !('geolocation' in navigator) || !navigator.geolocation) {
       setPhase('error');
       return;
     }
