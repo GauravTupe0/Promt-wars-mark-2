@@ -119,7 +119,7 @@ describe('PollMap Component', () => {
     // Marker interaction
     const markerMock = (window.google.maps.Marker as jest.Mock);
     const stationMarker = markerMock.mock.results.map(r => r.value).find(m => m && m.addListener);
-    
+
     if (stationMarker) {
       const clickCalls = stationMarker.addListener.mock.calls.filter(c => c[0] === 'click');
       if (clickCalls.length > 0) {
@@ -127,8 +127,12 @@ describe('PollMap Component', () => {
           clickCalls[0][1]();
         });
         expect(window.google.maps.InfoWindow).toHaveBeenCalled();
+        expect(screen.getByText(/Station 1/i)).toBeInTheDocument();
       }
     }
+
+    // Directions service should be called
+    expect(window.google.maps.DirectionsService).toHaveBeenCalled();
   });
 
   it('handles errors gracefully', async () => {
@@ -173,6 +177,26 @@ describe('PollMap Component', () => {
 
     await waitFor(() => {
       expect(screen.getByText(/API Key Invalid/i)).toBeInTheDocument();
+    });
+  });
+
+  it('uses fallback when real stations are empty', async () => {
+    (geolocationHook.useGeolocation as jest.Mock).mockReturnValue({
+      phase: 'ready',
+      userPosition: { lat: 12.34, lng: 56.78 },
+      locate: mockLocate,
+    });
+    (fetchRealPollingStations as jest.Mock).mockResolvedValue([]);
+
+    render(<PollMap />, { wrapper });
+
+    const [observerCallback] = (window.IntersectionObserver as jest.Mock).mock.calls[0];
+    act(() => {
+      observerCallback([{ isIntersecting: true }]);
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText(/Fallback Station/i)).toBeInTheDocument();
     });
   });
 });

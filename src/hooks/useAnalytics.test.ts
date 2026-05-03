@@ -2,19 +2,27 @@ import { renderHook } from '@testing-library/react';
 import { useAnalytics } from './useAnalytics';
 import { logEvent } from 'firebase/analytics';
 
-// Mock Firebase
-jest.mock('firebase/analytics', () => ({
-  logEvent: jest.fn(),
+// Define a mutable mock state that is hoisted correctly by Jest
+const mockFirebaseState = {
+  configured: true,
+  analytics: {}
+};
+
+// Mock Firebase using getters to allow dynamic state changes during tests
+jest.mock('@/firebase', () => ({
+  get analytics() { return mockFirebaseState.configured ? mockFirebaseState.analytics : null; },
+  get isFirebaseConfigured() { return mockFirebaseState.configured; },
 }));
 
-jest.mock('@/firebase', () => ({
-  analytics: {},
-  isFirebaseConfigured: true,
+// Mock Firebase Analytics
+jest.mock('firebase/analytics', () => ({
+  logEvent: jest.fn(),
 }));
 
 describe('useAnalytics hook', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockFirebaseState.configured = true;
   });
 
   it('tracks page views when activeSection changes', () => {
@@ -44,6 +52,23 @@ describe('useAnalytics hook', () => {
     expect(logEvent).toHaveBeenCalledWith(expect.anything(), 'app_error', {
       error_message: 'test error',
       component_name: 'TestComponent'
+    });
+  });
+
+  describe('when firebase is not configured', () => {
+    it('does not throw when tracking events', () => {
+      mockFirebaseState.configured = false;
+      const { result } = renderHook(() => useAnalytics());
+      
+      expect(() => result.current.trackEvent('any')).not.toThrow();
+      expect(logEvent).not.toHaveBeenCalled();
+    });
+
+    it('does not track page views', () => {
+      mockFirebaseState.configured = false;
+      renderHook(() => useAnalytics('home'));
+      
+      expect(logEvent).not.toHaveBeenCalled();
     });
   });
 });

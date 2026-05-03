@@ -118,5 +118,25 @@ describe('Navbar Component Integration', () => {
 
       expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
     });
+
+    it('handles English restore button click', async () => {
+      const user = userEvent.setup();
+      const { container } = render(<Navbar />);
+
+      // Mock the restore button in the DOM
+      const mockRestoreBtn = document.createElement('button');
+      mockRestoreBtn.className = 'goog-te-restore';
+      const clickSpy = jest.spyOn(mockRestoreBtn, 'click');
+      document.body.appendChild(mockRestoreBtn);
+
+      const langBtn = container.querySelector('#lang-switcher-btn') as HTMLElement;
+      await user.click(langBtn);
+
+      const englishOption = screen.getByText(/English/i);
+      await user.click(englishOption);
+
+      expect(clickSpy).toHaveBeenCalled();
+      document.body.removeChild(mockRestoreBtn);
+    });
   });
 });

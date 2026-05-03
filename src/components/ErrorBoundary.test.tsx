@@ -35,4 +35,14 @@ describe('ErrorBoundary Component', () => {
     );
     expect(screen.getByText(/Something went wrong/i)).toBeInTheDocument();
   });
+
+  it('renders custom fallback when provided', () => {
+    const CustomFallback = <div data-testid="custom-fallback">Custom Error</div>;
+    render(
+      <ErrorBoundary fallback={CustomFallback}>
+        <ThrowError shouldThrow={true} />
+      </ErrorBoundary>
+    );
+    expect(screen.getByTestId('custom-fallback')).toBeInTheDocument();
+  });
 });
